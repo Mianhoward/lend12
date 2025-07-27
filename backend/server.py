@@ -323,7 +323,7 @@ async def send_message(deal_id: str, message_data: dict, current_user: User = De
 @api_router.get("/deals/{deal_id}/messages")
 async def get_messages(deal_id: str, current_user: User = Depends(verify_session_token)):
     # Verify user has access to this deal
-    deal = await db.deals.find_one({"id": deal_id})
+    deal = await db.deals.find_one({"id": deal_id}, {"_id": 0})
     if not deal:
         raise HTTPException(status_code=404, detail="Deal not found")
     
@@ -331,7 +331,7 @@ async def get_messages(deal_id: str, current_user: User = Depends(verify_session
        (current_user.user_type == "lender" and deal["selected_lender"] != current_user.id):
         raise HTTPException(status_code=403, detail="Access denied")
     
-    messages = await db.messages.find({"deal_id": deal_id}).sort("timestamp", 1).to_list(100)
+    messages = await db.messages.find({"deal_id": deal_id}, {"_id": 0}).sort("timestamp", 1).to_list(100)
     return messages
 
 @api_router.post("/deals/{deal_id}/documents")
