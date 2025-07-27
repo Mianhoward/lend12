@@ -283,7 +283,7 @@ async def get_deal_interests(deal_id: str, current_user: User = Depends(verify_s
 
 @api_router.post("/deals/{deal_id}/select-lender")
 async def select_lender(deal_id: str, request_data: dict, current_user: User = Depends(verify_session_token)):
-    deal = await db.deals.find_one({"id": deal_id})
+    deal = await db.deals.find_one({"id": deal_id}, {"_id": 0})
     if not deal or deal["broker_id"] != current_user.id:
         raise HTTPException(status_code=403, detail="Access denied")
     
