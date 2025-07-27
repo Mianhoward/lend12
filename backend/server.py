@@ -224,7 +224,7 @@ async def get_broker_deals(current_user: User = Depends(verify_session_token)):
     if current_user.user_type != "broker":
         raise HTTPException(status_code=403, detail="Only brokers can view their deals")
     
-    deals = await db.deals.find({"broker_id": current_user.id}).to_list(100)
+    deals = await db.deals.find({"broker_id": current_user.id}, {"_id": 0}).to_list(100)
     return deals
 
 @api_router.get("/lender/deals")
