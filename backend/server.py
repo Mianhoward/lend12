@@ -363,7 +363,7 @@ async def upload_document(deal_id: str, file_data: dict, current_user: User = De
 @api_router.get("/deals/{deal_id}/documents")
 async def get_documents(deal_id: str, current_user: User = Depends(verify_session_token)):
     # Verify user has access to this deal
-    deal = await db.deals.find_one({"id": deal_id})
+    deal = await db.deals.find_one({"id": deal_id}, {"_id": 0})
     if not deal:
         raise HTTPException(status_code=404, detail="Deal not found")
     
@@ -371,10 +371,7 @@ async def get_documents(deal_id: str, current_user: User = Depends(verify_sessio
        (current_user.user_type == "lender" and deal["selected_lender"] != current_user.id):
         raise HTTPException(status_code=403, detail="Access denied")
     
-    documents = await db.documents.find({"deal_id": deal_id}).to_list(100)
-    # Remove encrypted content from response for security
-    for doc in documents:
-        doc.pop("encrypted_content", None)
+    documents = await db.documents.find({"deal_id": deal_id}, {"_id": 0, "encrypted_content": 0}).to_list(100)
     return documents
 
 @api_router.post("/deals/{deal_id}/complete")
