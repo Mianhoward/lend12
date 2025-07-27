@@ -122,6 +122,12 @@ class Message(BaseModel):
     message: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
+class LenderInterestCreate(BaseModel):
+    deal_id: str
+    interest_type: str  # "full" or "partial"
+    amount: Optional[float] = None  # for partial lending
+    message: str
+
 class LenderInterest(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     deal_id: str
