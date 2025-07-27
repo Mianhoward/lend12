@@ -192,11 +192,15 @@ async def get_profile(current_user: User = Depends(verify_session_token)):
     return current_user
 
 @api_router.post("/lender/criteria")
-async def create_lender_criteria(criteria: LenderCriteria, current_user: User = Depends(verify_session_token)):
+async def create_lender_criteria(criteria_data: LenderCriteriaCreate, current_user: User = Depends(verify_session_token)):
     if current_user.user_type != "lender":
         raise HTTPException(status_code=403, detail="Only lenders can set criteria")
     
-    criteria.lender_id = current_user.id
+    # Create criteria dict with lender info
+    criteria_dict = criteria_data.dict()
+    criteria_dict["lender_id"] = current_user.id
+    
+    criteria = LenderCriteria(**criteria_dict)
     await db.lender_criteria.insert_one(criteria.dict())
     return criteria
 
