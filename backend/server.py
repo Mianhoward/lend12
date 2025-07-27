@@ -337,7 +337,7 @@ async def get_messages(deal_id: str, current_user: User = Depends(verify_session
 @api_router.post("/deals/{deal_id}/documents")
 async def upload_document(deal_id: str, file_data: dict, current_user: User = Depends(verify_session_token)):
     # Verify user has access to this deal
-    deal = await db.deals.find_one({"id": deal_id})
+    deal = await db.deals.find_one({"id": deal_id}, {"_id": 0})
     if not deal:
         raise HTTPException(status_code=404, detail="Deal not found")
     
