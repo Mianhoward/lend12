@@ -269,14 +269,17 @@ async def get_available_deals(current_user: User = Depends(verify_session_token)
     return deals
 
 @api_router.post("/lender/interest")
-async def express_interest(interest_data: LenderInterest, current_user: User = Depends(verify_session_token)):
+async def express_interest(interest_data: LenderInterestCreate, current_user: User = Depends(verify_session_token)):
     if current_user.user_type != "lender":
         raise HTTPException(status_code=403, detail="Only lenders can express interest")
     
-    interest_data.lender_id = current_user.id
-    interest_data.lender_name = current_user.name
+    # Create interest dict with lender info
+    interest_dict = interest_data.dict()
+    interest_dict["lender_id"] = current_user.id
+    interest_dict["lender_name"] = current_user.name
     
-    await db.lender_interests.insert_one(interest_data.dict())
+    interest = LenderInterest(**interest_dict)
+    await db.lender_interests.insert_one(interest.dict())
     
     # Update deal with matched lender
     await db.deals.update_one(
