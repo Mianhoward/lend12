@@ -57,6 +57,14 @@ class UserRegister(BaseModel):
     name: str
     user_type: str
 
+class LenderCriteriaCreate(BaseModel):
+    loan_types: List[str]  # ["residential", "commercial", "construction", etc.]
+    min_amount: float
+    max_amount: float
+    regions: List[str]
+    credit_score_min: int
+    ltv_max: float  # Loan to Value ratio
+
 class LenderCriteria(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     lender_id: str
