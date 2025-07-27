@@ -205,9 +205,12 @@ async def create_deal(deal_data: DealCreate, current_user: User = Depends(verify
     if current_user.user_type != "broker":
         raise HTTPException(status_code=403, detail="Only brokers can create deals")
     
-    deal = Deal(**deal_data.dict())
-    deal.broker_id = current_user.id
-    deal.broker_name = current_user.name
+    # Create deal dict with broker info
+    deal_dict = deal_data.dict()
+    deal_dict["broker_id"] = current_user.id
+    deal_dict["broker_name"] = current_user.name
+    
+    deal = Deal(**deal_dict)
     
     await db.deals.insert_one(deal.dict())
     
