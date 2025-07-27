@@ -301,7 +301,7 @@ async def select_lender(deal_id: str, request_data: dict, current_user: User = D
 @api_router.post("/deals/{deal_id}/messages")
 async def send_message(deal_id: str, message_data: dict, current_user: User = Depends(verify_session_token)):
     # Verify user has access to this deal
-    deal = await db.deals.find_one({"id": deal_id})
+    deal = await db.deals.find_one({"id": deal_id}, {"_id": 0})
     if not deal:
         raise HTTPException(status_code=404, detail="Deal not found")
     
