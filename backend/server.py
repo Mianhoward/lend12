@@ -376,7 +376,7 @@ async def get_documents(deal_id: str, current_user: User = Depends(verify_sessio
 
 @api_router.post("/deals/{deal_id}/complete")
 async def complete_deal(deal_id: str, current_user: User = Depends(verify_session_token)):
-    deal = await db.deals.find_one({"id": deal_id})
+    deal = await db.deals.find_one({"id": deal_id}, {"_id": 0})
     if not deal:
         raise HTTPException(status_code=404, detail="Deal not found")
     
