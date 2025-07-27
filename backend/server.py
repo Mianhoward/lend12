@@ -197,7 +197,7 @@ async def get_lender_criteria(current_user: User = Depends(verify_session_token)
     if current_user.user_type != "lender":
         raise HTTPException(status_code=403, detail="Only lenders can view criteria")
     
-    criteria = await db.lender_criteria.find_one({"lender_id": current_user.id})
+    criteria = await db.lender_criteria.find_one({"lender_id": current_user.id}, {"_id": 0})
     return criteria if criteria else None
 
 @api_router.post("/broker/deals")
