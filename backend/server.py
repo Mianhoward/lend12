@@ -271,14 +271,14 @@ async def express_interest(interest_data: LenderInterest, current_user: User = D
 @api_router.get("/deals/{deal_id}/interests")
 async def get_deal_interests(deal_id: str, current_user: User = Depends(verify_session_token)):
     # Check if user has access to this deal
-    deal = await db.deals.find_one({"id": deal_id})
+    deal = await db.deals.find_one({"id": deal_id}, {"_id": 0})
     if not deal:
         raise HTTPException(status_code=404, detail="Deal not found")
     
     if current_user.user_type == "broker" and deal["broker_id"] != current_user.id:
         raise HTTPException(status_code=403, detail="Access denied")
     
-    interests = await db.lender_interests.find({"deal_id": deal_id}).to_list(100)
+    interests = await db.lender_interests.find({"deal_id": deal_id}, {"_id": 0}).to_list(100)
     return interests
 
 @api_router.post("/deals/{deal_id}/select-lender")
