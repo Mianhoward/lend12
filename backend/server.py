@@ -233,7 +233,7 @@ async def get_available_deals(current_user: User = Depends(verify_session_token)
         raise HTTPException(status_code=403, detail="Only lenders can view available deals")
     
     # Get lender criteria
-    criteria = await db.lender_criteria.find_one({"lender_id": current_user.id})
+    criteria = await db.lender_criteria.find_one({"lender_id": current_user.id}, {"_id": 0})
     if not criteria:
         return []
     
@@ -247,7 +247,7 @@ async def get_available_deals(current_user: User = Depends(verify_session_token)
         "ltv_ratio": {"$lte": criteria["ltv_max"]}
     }
     
-    deals = await db.deals.find(query).to_list(100)
+    deals = await db.deals.find(query, {"_id": 0}).to_list(100)
     return deals
 
 @api_router.post("/lender/interest")
