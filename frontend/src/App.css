@@ -378,7 +378,58 @@ body {
   background: #94a3b8;
   cursor: not-allowed;
 }
+/* Password Input Container */
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
 
+.password-input-container input {
+  width: 100%;
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #6b7280;
+  padding: 0;
+}
+
+.password-toggle:hover {
+  color: #1e3c72;
+}
+
+/* Human Verification */
+.human-verification {
+  margin: 1rem 0;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+  margin-bottom: 0;
+}
+
+.checkmark {
+  margin-left: 0.25rem;
+}
+
+/* Enhanced Error Styling */
 .error-message {
   background: #fee2e2;
   color: #dc2626;
