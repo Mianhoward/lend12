@@ -206,7 +206,8 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [isHuman, setIsHuman] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -215,6 +216,19 @@ const Login = () => {
     setLoading(true);
     setError('');
 
+    // Validate human verification
+    if (!isHuman) {
+      setError('Please confirm you are human');
+      setLoading(false);
+      return;
+    }
+
+    // Validate password strength (for registration)
+    if (!isLogin && formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
     try {
       const endpoint = isLogin ? '/auth/login' : '/auth/register';
       const payload = {
@@ -279,14 +293,36 @@ const Login = () => {
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               required
             />
+             <div className="password-input-container">
             <input
               type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
               required
             />
+            <button 
+                type="button" 
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+            </div>
             
+            <div className="human-verification">
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={isHuman}
+                  onChange={(e) => setIsHuman(e.target.checked)}
+                  required
+                />
+                <span className="checkmark"></span>
+                I am a human being
+              </label>
+            </div>
             {error && <div className="error-message">{error}</div>}
             
             <button type="submit" disabled={loading}>
