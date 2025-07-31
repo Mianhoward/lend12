@@ -3,8 +3,10 @@ services:
     name: lend12-backend
     env: python
     region: oregon
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn backend.server:app --host=0.0.0.0 --port=10000
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn backend.server:app --host 0.0.0.0 --port 10000"
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.10
+      - key: MONGO_URI
+        value: your-mongo-uri-here
+    autoDeploy: true
