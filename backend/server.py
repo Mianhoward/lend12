@@ -27,6 +27,30 @@ db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
 app = FastAPI()
+# Add your routes to the router instead of directly to app
+@api_router.get("/")
+async def root():
+    return {"message": "LendStronger API is running", "status": "healthy"}
+
+@api_router.get("/health")
+async def health_check():
+    try:
+        # Test database connection
+        await db.admin.command(\'ping\')
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "api": "running",
+            "timestamp": datetime.utcnow()
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "database": "disconnected",
+            "api": "running",
+            "error": str(e),
+            "timestamp": datetime.utcnow()
+        }
 api_router = APIRouter(prefix="/api")
 
 # Security
