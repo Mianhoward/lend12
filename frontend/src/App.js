@@ -295,7 +295,7 @@ const Login = () => {
             />
              <div className="password-input-container">
             <input
-              type="password"
+             
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={formData.password}
