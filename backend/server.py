@@ -155,11 +155,20 @@ def verify_password(password: str, hashed: str) -> bool:
 # Routes
 @api_router.post("/auth/register")
 async def register_user(user_data: UserRegister):
+       # Validate input data
+    if not user_data.email or not user_data.password or not user_data.name:
+        raise HTTPException(status_code=400, detail="All fields are required")
+    
+    if len(user_data.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long")
+    
+    if user_data.user_type not in ["broker", "lender"]:
+        raise HTTPException(status_code=400, detail="Invalid user type")
     # Check if user already exists
     existing_user = await db.users.find_one({"email": user_data.email})
     if existing_user:
-        raise HTTPException(status_code=400, detail="User already exists")
-    
+       
+        raise HTTPException(status_code=400, detail="User with this email already exists")
     # Hash password and create user
     hashed_password = hash_password(user_data.password)
     user_dict = user_data.dict()
@@ -168,13 +177,24 @@ async def register_user(user_data: UserRegister):
     user_dict["created_at"] = datetime.utcnow()
     
     await db.users.insert_one(user_dict)
-    return {"message": "User registered successfully"}
-
+    
+ return {"message": "User registered successfully", "success": True}
 @api_router.post("/auth/login")
 async def login_user(login_data: UserLogin):
+     # Validate input data
+    if not login_data.email or not login_data.password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    
+    if login_data.user_type not in ["broker", "lender"]:
+        raise HTTPException(status_code=400, detail="Invalid user type")
+    
     user = await db.users.find_one({"email": login_data.email, "user_type": login_data.user_type})
-    if not user or not verify_password(login_data.password, user["password"]):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+      if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or user type")
+    
+    if not verify_password(login_data.password, user["password"]):
+        raise HTTPException(status_code=401, detail="Invalid password")
     
     # Generate session token
     session_token = str(uuid.uuid4())
@@ -190,7 +210,9 @@ async def login_user(login_data: UserLogin):
             "name": user["name"],
             "user_type": user["user_type"]
         },
-        "session_token": session_token
+       
+             "session_token": session_token,
+        "success": True
     }
 
 @api_router.get("/auth/profile")
