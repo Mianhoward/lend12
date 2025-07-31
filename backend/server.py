@@ -202,7 +202,7 @@ async def register_user(user_data: UserRegister):
     
     await db.users.insert_one(user_dict)
     
-     return {"message": "User registered successfully", "success": True}
+    return {"message": "User registered successfully", "success": True}
 @api_router.post("/auth/login")
 async def login_user(login_data: UserLogin):
      # Validate input data
