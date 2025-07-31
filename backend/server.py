@@ -214,7 +214,7 @@ async def login_user(login_data: UserLogin):
     
     user = await db.users.find_one({"email": login_data.email, "user_type": login_data.user_type})
     
-      if not user:
+    if not user:
         raise HTTPException(status_code=401, detail="Invalid email or user type")
     
     if not verify_password(login_data.password, user["password"]):
