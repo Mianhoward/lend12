@@ -1,3 +1,4 @@
+from fastapi import FastAPI, APIRouter
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
@@ -16,6 +17,15 @@ import base64
 import json
 from cryptography.fernet import Fernet
 import io
+
+api_router = APIRouter()
+
+@api_router.get("/")
+def root():
+    return {"message": "Hello from Render!"}
+
+app = FastAPI()
+app.include_router(api_router)
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
