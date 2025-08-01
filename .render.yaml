@@ -1,11 +1,13 @@
 services:
   - type: web
-    name: lend12-backend
+    name: lend12-1-back
     env: python
     region: oregon
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn backend.server:app --host 0.0.0.0 --port 10000
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn backend.server:app --host 0.0.0.0 --port 10000"
     envVars:
+       - key: PYTHON_VERSION
+        value: 3.10
       - key: MONGO_URI
         value: mongodb+srv://mianhoward:Powerh123@lend1.y9tbzr1.mongodb.net
