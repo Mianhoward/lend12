@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
@@ -25,6 +26,13 @@ def root():
     return {"message": "Hello from Render!"}
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://lend12-1.onrender.com"],  # Your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(api_router)
 
 ROOT_DIR = Path(__file__).parent
