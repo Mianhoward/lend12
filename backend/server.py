@@ -21,9 +21,7 @@ import io
 
 api_router = APIRouter()
 
-@api_router.get("/")
-def root():
-    return {"message": "Hello from Render!"}
+
 
 app = FastAPI()
 app.add_middleware(
@@ -33,6 +31,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@api_router.get("/")
+def root():
+    return {"message": "Hello from backend!"}
 app.include_router(api_router)
 
 ROOT_DIR = Path(__file__).parent
